@@ -82,7 +82,7 @@ BSP (Binary Space Partitioning):
 - `ai/training/env_wrapper.py` — 环境封装
 - `ai/agents/model.py` — 神经网络
 - `ai/agents/rl_agent.py` — PPO 算法
-- `ai/agents/trainer.py` — 训练循环
+- `ai/training/train_agent.py` — 训练循环
 
 **核心概念:**
 - 强化学习基本框架 (Agent-Environment Loop)
