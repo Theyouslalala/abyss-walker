@@ -121,14 +121,12 @@ namespace AbyssWalker.Editor
 
             if (isPlayer)
             {
-                go.AddComponent<AbyssWalker.Entity.EntityStats>();
                 go.AddComponent<AbyssWalker.Entity.Player>();
                 go.AddComponent<AbyssWalker.Combat.AutoAttack>();
                 go.tag = "Player";
             }
             else
             {
-                go.AddComponent<AbyssWalker.Entity.EntityStats>();
                 go.AddComponent<AbyssWalker.Entity.Enemy>();
             }
 
@@ -147,7 +145,7 @@ namespace AbyssWalker.Editor
             return Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
         }
 
-        [MenuItem("Abyss Walker/一键配置场景", false, 1)]
+        [MenuItem("Abyss Walker/创建场景对象", false, 2)]
         public static void CreateSceneObjects()
         {
             // ========== Grid + Tilemap ==========
@@ -174,8 +172,6 @@ namespace AbyssWalker.Editor
             if (player == null)
             {
                 player = CreateEntityInScene("Player", Color.blue, new Vector3(0, 0, 0));
-                if (!player.GetComponent<AbyssWalker.Entity.EntityStats>())
-                    player.AddComponent<AbyssWalker.Entity.EntityStats>();
                 if (!player.GetComponent<AbyssWalker.Entity.Player>())
                     player.AddComponent<AbyssWalker.Entity.Player>();
                 if (!player.GetComponent<AbyssWalker.Combat.AutoAttack>())
@@ -206,7 +202,7 @@ namespace AbyssWalker.Editor
                 netObj = new GameObject("NetworkManager");
             }
             AddIfMissing<AbyssWalker.Network.SocketClient>(netObj);
-            AddIfMissing<AbyssWalker.Network.GameStateSerializer>(netObj);
+            // GameStateSerializer is a plain class, not a MonoBehaviour — accessed via SocketClient
 
             // ========== DungeonRenderer ==========
             GameObject dungeonRendererObj = GameObject.Find("DungeonRenderer");

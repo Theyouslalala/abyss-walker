@@ -1,8 +1,8 @@
 """Async TCP server for Unity-Python communication."""
 
 import asyncio
-import json
 import logging
+import random
 
 from ai.server.config import HOST, PORT
 from ai.server.protocol import read_message, send_message
@@ -31,7 +31,8 @@ class GameServer:
         except (asyncio.IncompleteReadError, ConnectionResetError):
             logger.info(f"Client disconnected: {addr}")
         finally:
-            self.clients.remove(writer)
+            if writer in self.clients:
+                self.clients.remove(writer)
             writer.close()
             await writer.wait_closed()
 
@@ -55,10 +56,10 @@ class GameServer:
 
         # Placeholder: return a simple random decision
         # This will be replaced by actual AI agent logic
-        import random
         player = payload.get("player", {})
         enemies = payload.get("enemies", [])
-        px, py = player.get("pos", [0, 0])
+        pos = player.get("pos", [0, 0])
+        px, py = pos[0], pos[1] if len(pos) > 1 else 0
 
         # Simple movement decision
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (0, 0)]

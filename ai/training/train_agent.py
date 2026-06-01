@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import os
 
 import torch
 
@@ -77,7 +78,6 @@ def train(
             logger.info(f"Episode {episode}/{num_episodes}: reward={episode_reward:.1f}, avg_50={avg_reward:.1f}")
 
         if (episode + 1) % save_every == 0:
-            import os
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             agent.save(save_path)
             logger.info(f"Checkpoint saved: {save_path}")

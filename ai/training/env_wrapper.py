@@ -70,19 +70,20 @@ class AbyssWalkerEnv(gym.Env):
         new_y = max(0, min(self.grid_size - 1, self.player_pos[1] + dy))
         self.player_pos = [new_x, new_y]
 
-        # Auto-attack nearby enemies
-        enemies_to_remove = []
-        for i, enemy in enumerate(self.enemies):
-            ex, ey = enemy["pos"]
-            dist = abs(self.player_pos[0] - ex) + abs(self.player_pos[1] - ey)
-            if dist <= 1:
-                enemy["hp"] -= 15  # Player attack damage
-                if enemy["hp"] <= 0:
-                    enemies_to_remove.append(i)
-                    reward += 10.0
+        # Attack nearby enemies only on attack action (action==5)
+        if action == 5:
+            enemies_to_remove = []
+            for i, enemy in enumerate(self.enemies):
+                ex, ey = enemy["pos"]
+                dist = abs(self.player_pos[0] - ex) + abs(self.player_pos[1] - ey)
+                if dist <= 1:
+                    enemy["hp"] -= 15  # Player attack damage
+                    if enemy["hp"] <= 0:
+                        enemies_to_remove.append(i)
+                        reward += 10.0
 
-        for i in reversed(enemies_to_remove):
-            self.enemies.pop(i)
+            for i in reversed(enemies_to_remove):
+                self.enemies.pop(i)
 
         # Enemy actions
         for enemy in self.enemies:

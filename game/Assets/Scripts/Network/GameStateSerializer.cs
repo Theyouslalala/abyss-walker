@@ -201,23 +201,20 @@ namespace AbyssWalker.Network
             data.X = gridPos.x;
             data.Y = gridPos.y;
 
-            // Try to read stats from a Player component (if it exists)
-            // This uses reflection-safe approach - falls back to defaults
-            var playerComponent = playerGO.GetComponent("Player");
+            // Read stats from Player component directly
+            var playerComponent = playerGO.GetComponent<AbyssWalker.Entity.Player>();
             if (playerComponent != null)
             {
-                // Use reflection to read common fields safely
-                data.Hp = GetIntField(playerComponent, "Hp", 100);
-                data.MaxHp = GetIntField(playerComponent, "MaxHp", 100);
-                data.Attack = GetIntField(playerComponent, "Attack", 10);
-                data.Defense = GetIntField(playerComponent, "Defense", 5);
-                data.Level = GetIntField(playerComponent, "Level", 1);
-                data.Exp = GetIntField(playerComponent, "Exp", 0);
-                data.Id = GetIntField(playerComponent, "Id", 0);
+                data.Hp = playerComponent.GetCurrentHP();
+                data.MaxHp = playerComponent.GetMaxHP();
+                data.Attack = playerComponent.Stats.attack;
+                data.Defense = playerComponent.Stats.defense;
+                data.Level = playerComponent.Stats.level;
+                data.Exp = playerComponent.Stats.exp;
+                data.Id = 0;
             }
             else
             {
-                // Default values when no Player component is found
                 data.Id = 0;
                 data.Hp = 100;
                 data.MaxHp = 100;
@@ -248,17 +245,17 @@ namespace AbyssWalker.Network
             data.X = gridPos.x;
             data.Y = gridPos.y;
 
-            // Try to read from an Enemy component
-            var enemyComponent = enemyGO.GetComponent("Enemy");
+            // Read from Enemy component directly
+            var enemyComponent = enemyGO.GetComponent<AbyssWalker.Entity.Enemy>();
             if (enemyComponent != null)
             {
-                data.Id = GetIntField(enemyComponent, "Id", -1);
-                data.Name = GetStringField(enemyComponent, "Name", enemyGO.name);
-                data.Hp = GetIntField(enemyComponent, "Hp", 30);
-                data.MaxHp = GetIntField(enemyComponent, "MaxHp", 30);
-                data.Attack = GetIntField(enemyComponent, "Attack", 5);
-                data.Defense = GetIntField(enemyComponent, "Defense", 3);
-                data.Behavior = GetStringField(enemyComponent, "Behavior", "aggressive");
+                data.Id = enemyComponent.EnemyId;
+                data.Name = enemyGO.name;
+                data.Hp = enemyComponent.Stats.hp;
+                data.MaxHp = enemyComponent.Stats.maxHp;
+                data.Attack = enemyComponent.Stats.attack;
+                data.Defense = enemyComponent.Stats.defense;
+                data.Behavior = enemyComponent.Type.ToString().ToLower();
             }
             else
             {

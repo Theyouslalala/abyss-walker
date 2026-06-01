@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using AbyssWalker.Entity;
 
 namespace AbyssWalker.Events
 {
@@ -137,7 +138,7 @@ namespace AbyssWalker.Events
                     treasureEvent?.Trigger(evt);
                     break;
                 case EventType.Trap:
-                    PlayerController player = FindObjectOfType<PlayerController>();
+                    Player player = FindObjectOfType<Player>();
                     int perception = player != null ? player.GetPerception() : 0;
                     if (!trapEvent.CanDetectTrap(evt, perception))
                     {

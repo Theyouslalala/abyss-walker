@@ -78,8 +78,8 @@ namespace AbyssWalker.Core
 
             if (em != null)
             {
-                em.OnPlayerMove += HandlePlayerAction;
-                em.OnCombatEnd += HandlePlayerAction;
+                em.OnPlayerMove += HandlePlayerMove;
+                em.OnCombatEnd += HandleCombatEnd;
             }
         }
 
@@ -93,8 +93,8 @@ namespace AbyssWalker.Core
 
             if (em != null)
             {
-                em.OnPlayerMove -= HandlePlayerAction;
-                em.OnCombatEnd -= HandlePlayerAction;
+                em.OnPlayerMove -= HandlePlayerMove;
+                em.OnCombatEnd -= HandleCombatEnd;
             }
         }
 
@@ -248,8 +248,14 @@ namespace AbyssWalker.Core
             yield return null;
         }
 
-        /// <summary>Helper to handle any player action event as a turn action submission.</summary>
-        private void HandlePlayerAction()
+        /// <summary>Handle player move event as a turn action submission.</summary>
+        private void HandlePlayerMove(int fromX, int fromY, int toX, int toY)
+        {
+            SubmitPlayerAction();
+        }
+
+        /// <summary>Handle combat end event as a turn action submission.</summary>
+        private void HandleCombatEnd(int winnerId, int loserId, int damageDealt)
         {
             SubmitPlayerAction();
         }

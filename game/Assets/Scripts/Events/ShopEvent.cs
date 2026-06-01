@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using AbyssWalker.Entity;
 
 namespace AbyssWalker.Events
 {
@@ -43,7 +44,7 @@ namespace AbyssWalker.Events
             ShopItem item = currentEvent.shopItems[itemIndex];
             if (item.isSold) return false;
 
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player == null) return false;
 
             if (player.GetGold() < item.price)
@@ -77,7 +78,7 @@ namespace AbyssWalker.Events
         /// </summary>
         public bool SellItem(string itemId, int sellPrice)
         {
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player == null) return false;
 
             if (player.RemoveItem(itemId))
@@ -108,7 +109,7 @@ namespace AbyssWalker.Events
             }
         }
 
-        private void GrantItem(ShopItem item, PlayerController player)
+        private void GrantItem(ShopItem item, Player player)
         {
             switch (item.itemType)
             {
@@ -153,7 +154,7 @@ namespace AbyssWalker.Events
                 }
             }
 
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player != null)
             {
                 sb.AppendLine($"\nYour Gold: {player.GetGold()}");

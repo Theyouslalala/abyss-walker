@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using AbyssWalker.Entity;
 
 namespace AbyssWalker.Events
 {
@@ -66,7 +67,7 @@ namespace AbyssWalker.Events
 
         private void ApplyBlessing(BlessingOption blessing)
         {
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player == null) return;
 
             switch (blessing.blessingType)

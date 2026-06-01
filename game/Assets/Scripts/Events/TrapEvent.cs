@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using AbyssWalker.Entity;
 
 namespace AbyssWalker.Events
 {
@@ -94,7 +95,7 @@ namespace AbyssWalker.Events
 
         private void ApplyTrapEffect(TrapResult result)
         {
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player == null) return;
 
             player.TakeDamage(result.damageDealt);

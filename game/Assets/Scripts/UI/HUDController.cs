@@ -36,7 +36,7 @@ namespace AbyssWalker.UI
         [SerializeField] private float hpLowThreshold = 0.25f;
         [SerializeField] private float hpMidThreshold = 0.5f;
 
-        private PlayerController trackedPlayer;
+        private AbyssWalker.Entity.Player trackedPlayer;
 
         private void Start()
         {
@@ -54,7 +54,7 @@ namespace AbyssWalker.UI
         {
             if (trackedPlayer == null)
             {
-                trackedPlayer = FindObjectOfType<PlayerController>();
+                trackedPlayer = FindObjectOfType<AbyssWalker.Entity.Player>();
                 if (trackedPlayer == null) return;
             }
 

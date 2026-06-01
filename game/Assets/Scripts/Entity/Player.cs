@@ -21,8 +21,16 @@ namespace AbyssWalker.Entity
         [SerializeField] private float moveThreshold = 0.05f;
 
         [Header("Combat")]
-        [SerializeField] private float autoAttackCooldown = 1.0f;
-        [SerializeField] private int attackRange = 1;
+        private float critChance = 0.05f;
+
+        [Header("Equipment & Inventory")]
+        private string equippedWeaponId;
+        private string equippedArmorId;
+        private string equippedAccessoryId;
+        private List<string> learnedSkills = new List<string>();
+        private int potions;
+        private int gold;
+        private int perception = 3;
 
         [Header("References")]
         [SerializeField] private GridManager gridManager;
@@ -40,8 +48,6 @@ namespace AbyssWalker.Entity
         public event Action<Vector2Int> OnPlayerMoved;
 
         private bool isMoving;
-        private float autoAttackTimer;
-        private Enemy currentTarget;
         private Animator animator;
 
         private void Awake()
@@ -72,7 +78,6 @@ namespace AbyssWalker.Entity
             if (!stats.IsAlive) return;
 
             HandleMovementInput();
-            UpdateAutoAttack();
         }
 
         /// <summary>
@@ -153,42 +158,6 @@ namespace AbyssWalker.Entity
         }
 
         /// <summary>
-        /// Auto-attack logic: find nearest enemy in range, attack on cooldown.
-        /// </summary>
-        private void UpdateAutoAttack()
-        {
-            autoAttackTimer -= Time.deltaTime;
-
-            if (autoAttackTimer > 0f) return;
-
-            EntityManager entityManager = FindObjectOfType<EntityManager>();
-            if (entityManager == null) return;
-
-            Enemy nearest = entityManager.GetNearestEnemy(GridPosition, attackRange);
-            if (nearest != null)
-            {
-                PerformAutoAttack(nearest);
-                autoAttackTimer = autoAttackCooldown / stats.speed;
-            }
-        }
-
-        /// <summary>
-        /// Execute a single auto-attack against a target enemy.
-        /// </summary>
-        private void PerformAutoAttack(Enemy target)
-        {
-            if (target == null || !target.Stats.IsAlive) return;
-
-            CombatManager combatManager = FindObjectOfType<CombatManager>();
-            if (combatManager != null)
-            {
-                combatManager.ProcessAttack(stats, target.Stats);
-            }
-
-            animator?.SetTrigger("Attack");
-        }
-
-        /// <summary>
         /// Activate a skill by index from the SkillSystem.
         /// Called from UI button or keybind.
         /// </summary>
@@ -224,6 +193,66 @@ namespace AbyssWalker.Entity
         public bool RemoveItem(string itemId)
         {
             return Inventory.Remove(itemId);
+        }
+
+        // ========== Stats Accessors (used by HUD, Events, etc.) ==========
+
+        public int GetCurrentHP() => stats.hp;
+        public int GetMaxHP() => stats.maxHp;
+        public int GetGold() => gold;
+        public int GetPerception() => perception;
+        public int GetDEF() => stats.defense;
+
+        public void AddGold(int amount) { gold += Mathf.Max(0, amount); }
+        public bool SpendGold(int amount)
+        {
+            if (gold < amount) return false;
+            gold -= amount;
+            return true;
+        }
+
+        public void AddPotion() { potions++; }
+
+        public void EquipWeapon(string id, string name, int atkBonus)
+        {
+            equippedWeaponId = id;
+            stats.attack += atkBonus;
+        }
+
+        public void EquipArmor(string id, string name, int defBonus)
+        {
+            equippedArmorId = id;
+            stats.defense += defBonus;
+        }
+
+        public void EquipAccessory(string id, string name, int value)
+        {
+            equippedAccessoryId = id;
+        }
+
+        public void LearnSkill(string skillId)
+        {
+            if (!learnedSkills.Contains(skillId))
+                learnedSkills.Add(skillId);
+        }
+
+        public void IncreaseMaxHP(int amount)
+        {
+            stats.maxHp += Mathf.Max(0, amount);
+        }
+
+        public void Heal(int amount) { stats.Heal(amount); }
+
+        public void IncreaseATK(int amount) { stats.attack += Mathf.Max(0, amount); }
+        public void IncreaseDEF(int amount) { stats.defense += Mathf.Max(0, amount); }
+        public void IncreaseSpeed(float amount) { stats.speed += Mathf.Max(0f, amount); }
+        public void IncreaseCritChance(float amount) { critChance += Mathf.Max(0f, amount); }
+
+        public void TakeDamage(int damage) { stats.TakeDamage(damage); }
+
+        public void ApplyDebuff(string debuffType, int duration)
+        {
+            // Stub — debuff system can be expanded later
         }
 
         /// <summary>

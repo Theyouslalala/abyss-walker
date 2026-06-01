@@ -1,10 +1,8 @@
 """Experience replay buffer for PPO training."""
 
-from dataclasses import dataclass
 import torch
 
 
-@dataclass
 class RolloutBuffer:
     """Stores trajectories collected during environment interaction."""
 
@@ -15,6 +13,8 @@ class RolloutBuffer:
         self.rewards: list[float] = []
         self.values: list[torch.Tensor] = []
         self.dones: list[bool] = []
+        self.advantages: list = []
+        self.returns: list = []
 
     def add(self, obs, action, log_prob, reward, value, done):
         self.observations.append(obs)

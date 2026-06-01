@@ -105,13 +105,13 @@ def create_goblin_bt() -> BTNode:
 
 
 def create_shadow_mage_bt() -> BTNode:
-    """Shadow mage: keeps distance, attacks from range."""
+    """Shadow mage: keeps distance, attacks from range, flees when close."""
 
     def _ranged_attack(context: dict) -> NodeStatus:
         context["action"] = {"type": "ranged_attack", "target": "player", "range": 3}
         return NodeStatus.SUCCESS
 
-    def _keep_distance(context: dict) -> NodeStatus:
+    def _flee(context: dict) -> NodeStatus:
         ex, ey = context.get("enemy_pos", [0, 0])
         px, py = context.get("player_pos", [0, 0])
         dx = -1 if px > ex else (1 if px < ex else 0)
@@ -119,15 +119,32 @@ def create_shadow_mage_bt() -> BTNode:
         context["action"] = {"type": "move", "to": [ex + dx, ey + dy]}
         return NodeStatus.SUCCESS
 
+    def _approach(context: dict) -> NodeStatus:
+        ex, ey = context.get("enemy_pos", [0, 0])
+        px, py = context.get("player_pos", [0, 0])
+        dx = 1 if px > ex else (-1 if px < ex else 0)
+        dy = 1 if py > ey else (-1 if py < ey else 0)
+        context["action"] = {"type": "move", "to": [ex + dx, ey + dy]}
+        return NodeStatus.SUCCESS
+
     return Selector(
         [
+            # Too close (distance 1): flee
+            Sequence(
+                [
+                    Condition(lambda ctx: _is_player_in_range(ctx, 1)),
+                    Action(_flee),
+                ]
+            ),
+            # Medium range (2-3): ranged attack
             Sequence(
                 [
                     Condition(lambda ctx: _is_player_in_range(ctx, 3)),
                     Action(_ranged_attack),
                 ]
             ),
-            Action(_keep_distance),
+            # Far: approach to get in range
+            Action(_approach),
         ]
     )
 
@@ -141,7 +158,8 @@ ENEMY_BT_MAP = {
 
 def get_enemy_decision(enemy_type: str, context: dict) -> dict:
     """Get the decision for an enemy given its type and game context."""
+    ctx = dict(context)  # avoid mutating caller's dict
     bt_factory = ENEMY_BT_MAP.get(enemy_type, create_skeleton_bt)
     bt = bt_factory()
-    bt.tick(context)
-    return context.get("action", {"type": "idle"})
+    bt.tick(ctx)
+    return ctx.get("action", {"type": "idle"})

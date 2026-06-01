@@ -13,6 +13,8 @@ class EventPlacer:
 
     def place_treasure(self, dungeon: Dungeon, room: Room) -> dict | None:
         """Place a treasure chest in a room."""
+        if room.w <= 2 or room.h <= 2:
+            return None
         x = random.randint(room.x + 1, room.x + room.w - 2)
         y = random.randint(room.y + 1, room.y + room.h - 2)
         return {
@@ -24,6 +26,8 @@ class EventPlacer:
 
     def place_trap(self, dungeon: Dungeon, room: Room) -> dict | None:
         """Place a hidden trap in a room."""
+        if room.w <= 2 or room.h <= 2:
+            return None
         x = random.randint(room.x + 1, room.x + room.w - 2)
         y = random.randint(room.y + 1, room.y + room.h - 2)
         return {

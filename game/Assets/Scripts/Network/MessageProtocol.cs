@@ -180,11 +180,18 @@ namespace AbyssWalker.Network
         /// <summary>Human-readable event description.</summary>
         public string Description;
 
-        /// <summary>Stat changes applied by the event (stat name -> delta).</summary>
-        public Dictionary<string, int> Effects;
+        /// <summary>Stat changes applied by the event.</summary>
+        public EffectEntry[] Effects;
 
         /// <summary>Whether the event is beneficial or harmful.</summary>
         public bool IsPositive;
+    }
+
+    [System.Serializable]
+    public class EffectEntry
+    {
+        public string Stat;
+        public int Delta;
     }
 
     #endregion

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from enum import Enum
 
 
@@ -50,7 +51,7 @@ class Sequence(BTNode):
 class Condition(BTNode):
     """Check a condition function."""
 
-    def __init__(self, check: callable):
+    def __init__(self, check: Callable[[dict], bool]):
         self.check = check
 
     def tick(self, context: dict) -> NodeStatus:
@@ -60,7 +61,7 @@ class Condition(BTNode):
 class Action(BTNode):
     """Execute an action function."""
 
-    def __init__(self, action: callable):
+    def __init__(self, action: Callable[[dict], NodeStatus]):
         self.action = action
 
     def tick(self, context: dict) -> NodeStatus:

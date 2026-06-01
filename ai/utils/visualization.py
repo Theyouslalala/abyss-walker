@@ -1,13 +1,13 @@
 """Training visualization with TensorBoard and map ASCII visualization."""
 
 import os
-from torch.utils.tensorboard import SummaryWriter
 
 
 class TrainingLogger:
     """Logs training metrics to TensorBoard."""
 
     def __init__(self, log_dir: str = "runs/ppo_training"):
+        from torch.utils.tensorboard import SummaryWriter
         os.makedirs(log_dir, exist_ok=True)
         self.writer = SummaryWriter(log_dir)
 

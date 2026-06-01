@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using AbyssWalker.Entity;
 
 namespace AbyssWalker.Events
 {
@@ -85,7 +86,7 @@ namespace AbyssWalker.Events
         {
             // Notify player controller to add gold/items
             // This will be connected via event or direct reference
-            PlayerController player = FindObjectOfType<PlayerController>();
+            Player player = FindObjectOfType<Player>();
             if (player != null)
             {
                 player.AddGold(loot.gold);
